@@ -27,6 +27,9 @@ Current state of the app, captured before further improvements (source files in 
 ![Add rocket](dokumentasi_projek/04-add-rocket-form.png)
 *Add rocket form — validated, new rocket appears at the top of the list*
 
+![Rocket details](dokumentasi_projek/05-rocket-details.png)
+*Rocket detail — full fields with fallbacks (Starship V3: placeholder image, no cost)*
+
 ## Learnings
 
 ### Requirement data
@@ -43,7 +46,13 @@ API types (`LauncherConfigApi`) are kept separate from UI types (`Rocket`) throu
 
 ### Rocket detail
 
-To be documented once the detail page ships. The planned approach: reuse the already-fetched list data from the store first, and only request `/config/launcher/:id/` when the rocket is not in the list (for example on a hard page refresh), which avoids unnecessary API calls.
+The detail page reuses data instead of re-fetching blindly. On load it first
+checks the rocket list already held in the store — so clicking a card (including
+locally added rockets) opens instantly with zero API calls. Only when the id is
+not in the list (for example on a hard page refresh of a detail URL) does it
+fall back to a single request to `/config/launcher/:id/`. Costs are formatted
+with `toLocaleString` (`"7000000"` → `$7,000,000`), and missing fields render
+as a placeholder image or `—` instead of crashing the view.
 
 ### Integration
 
@@ -51,12 +60,19 @@ Clear layering: `services/` (fetching + mapping) → `stores/` (state, actions) 
 
 ## Usage
 
+## Usage
+
 ```bash
 npm install
-npm run dev          # start the dev server
-npm run type-check   # vue-tsc type checking
-npm run build        # type-check + production build
-```
+npm run dev
+npm run type-check
+npm run build
+Required configuration via .env:
+
+VITE_API_BASE=https://lldev.thespacedevs.com/2.2.0
+The app fails fast if this variable is missing. Note: VITE_API_BASE is not
+a secret mechanism — everything shipped to the browser is public. It exists
+purely for per-environment configuration.
 
 Optional configuration via `.env`:
 

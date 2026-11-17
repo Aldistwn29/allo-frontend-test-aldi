@@ -1,5 +1,5 @@
 <template>
-  <v-card rounded="lg">
+  <v-card :to="`/rockets/${rocket.id}`" rounded="lg">
     <v-img 
       v-if="rocket.image"
       :src="rocket.image"
